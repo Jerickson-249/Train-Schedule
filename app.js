@@ -41,44 +41,48 @@ $("#addtrain").on("click", function () {
 // show the info after calculate next train and minutes away
 //Creating a firebase event for adding the data from the new trains and then putting them in the DOM
 db.ref().on("child_added", function(childSnapshot, prevChildKey) {
-    console.log(childSnapshot.val().trainName)
+    console.log(childSnapshot.val().trainName, childSnapshot.val().firstTrain )
 
 // calculate next train and minutes away 
 var nextArrival;
 var minsAway;
 
+// you know the first /  you know the current   current - first = minutesdiff  /// minutes / frequency = reminder /// frequency - reminder are the minutes away
+// current + minutes away is the next train
+
 //Change year so that the first train comes before the current time
-var firsttrainNew = moment(childsnapshot.val().firstTrain,"hh:mm").subtract(1,"years");
+var firstTrainNew = moment(childSnapshot.val().firstTrain,"hh:mm");
 
 //Stating the difference between the firstTrain and the current train
 var diffTime = moment().diff(moment(firstTrainNew),"minutes");
-var remainder = diffTime % childsnapshot.val().frequency;
+console.log("minutes:", diffTime)
+var remainder = diffTime % childSnapshot.val().frequency;
 
 //Minutes away from the next train
-var minsAway = childsnapshot.val().frequency - remainder;
+var minsAway = childSnapshot.val().frequency - remainder;
 
 //Next train time
-var nextTrain = moment(nextTrain).format("hh:mm");
+nextTrain = moment().add(minsAway, "minutes").format("hh:mm")
 
 // you know the firsttrain, frequency  // current time
 
-$("#trains").append(trow)
+// $("#trains").append(trow)
 
-var trow= `<tr>
+// var trow= `<tr>
 
-<td>${data.val().trainName}</td>
-<td>${data.val().destination}</td>
-<td>${data.val().firsttraintime}</td>
-<td>${data.val().frequency}</td>
-</tr>`
+// <td>${data.val().trainName}</td>
+// <td>${data.val().destination}</td>
+// <td>${data.val().firsttraintime}</td>
+// <td>${data.val().frequency}</td>
+// </tr>`
 
 //Appending the added row to the table provided
 
 //add the data into the DOM/ HTML
-$("#add-row").append("<tr><td>" + childsnapshot.val().name +
+$("#trains").append("<tr><td>" + childSnapshot.val().trainName +
     "</td><td>" + childSnapshot.val().destination +
-    "</td><td>" + childSnapshot.val().frequency +
     "</td><td>" + nextTrain + 
+    "</td><td>" + childSnapshot.val().frequency +
     "</td><td>" + minsAway + "</td></tr>");
 
 //Deal with the errors
