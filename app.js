@@ -44,7 +44,6 @@ db.ref().on("child_added", function(childSnapshot, prevChildKey) {
     console.log(childSnapshot.val().trainName, childSnapshot.val().firstTrain )
 
 // calculate next train and minutes away 
-var nextArrival;
 var minsAway;
 
 // you know the first /  you know the current   current - first = minutesdiff  /// minutes / frequency = reminder /// frequency - reminder are the minutes away
